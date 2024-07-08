@@ -1,7 +1,6 @@
 import { User, Organisation} from "../models/associations.js"
-import  CryptoJS  from "crypto-js";
 import bcrypt from "bcryptjs/dist/bcrypt.js";
-import { PASS, JWT } from "../config/config.js";
+import { JWT } from "../config/config.js";
 import jwt from "jsonwebtoken";
 
 
@@ -62,12 +61,12 @@ const register = async (req, res) => {
 // user login controller
 const login = async (req, res) => {
 
-    const { email, password } = req.body
+    const { email, password} = req.body
 
     try {
         const user = await User.findOne({ where: { email }})
 
-        if(!user || !await bcrypt.compare(password, user.password)){
+        if(!user || !(await bcrypt.compare(password, user.password))){
             return res.status(401).json({
                 status: 'Bad request',
                 message: 'Authentication failed',
@@ -75,7 +74,7 @@ const login = async (req, res) => {
               })
         }
 
-        const token = jwt.sign({ userId: newUser.userId, email: newUser.email }, JWT, {expiresIn: "1h"})
+        const token = jwt.sign({ userId: user.userId, email: user.email }, JWT, {expiresIn: "1h"})
         const tokenLS = 1000 * 3 * 24 * 60 * 60
         res.cookie("auth", token, {httpOnly: true, maxAge: tokenLS})
 
@@ -96,9 +95,7 @@ const login = async (req, res) => {
         
         
     } catch (e) {
-        
         res.status(401).json({
-            err: e, 
           status: 'Bad request',
           message: 'Authentication failed',
           statusCode: 401,
