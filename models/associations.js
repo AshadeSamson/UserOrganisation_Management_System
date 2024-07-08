@@ -5,9 +5,9 @@ import { Organisation } from "./organisaton.js";
 User.belongsToMany(Organisation, { through: 'UserOrganisations' });
 Organisation.belongsToMany(User, { through: 'UserOrganisations' });
 
-db.sync({ force: true })
+db.sync()
   .then(() => {
-    console.log('Database & tables created!');
+    console.log('Database & tables synced successfully');
 });
 
 export { User, Organisation}

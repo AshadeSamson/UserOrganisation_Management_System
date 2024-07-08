@@ -1,6 +1,7 @@
 import express from "express"
 import { PORT } from "./config/config.js"
 import { db } from "./config/db.js"
+import authRouter from "./routes/authRoute.js"
 
 const app = express()
 
@@ -17,9 +18,11 @@ app.use(express.json())
 
 
 
+// routes
 app.get("/", (req, res) => {
     res.status(200).json("You are welcome")
 })
+app.use("/auth", authRouter)
 
 
 app.listen(PORT || 5000, () => {

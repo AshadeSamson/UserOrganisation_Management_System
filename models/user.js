@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { db } from "../config/db.js";
+import { Organisation } from "./organisaton.js";
 
 
 export const User = db.define("User", {
@@ -30,3 +31,4 @@ export const User = db.define("User", {
         type: DataTypes.STRING
     }
 })
+

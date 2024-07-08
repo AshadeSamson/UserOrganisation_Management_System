@@ -1,6 +1,6 @@
-import { User } from "../models/user.js";
-import { Organisation } from "../models/organisaton.js";
+import { User, Organisation} from "../models/associations.js"
 import  CryptoJS  from "crypto-js";
+import bcrypt from "bcryptjs/dist/bcrypt.js";
 import { PASS, JWT } from "../config/config.js";
 import jwt from "jsonwebtoken";
 
@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken";
 const register = async (req, res) => {
 
     const { firstName, lastName, email, password, phone} = req.body
-    const hashedPassword = CryptoJS.AES.encrypt(password, PASS) 
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     try{
         
@@ -22,7 +22,7 @@ const register = async (req, res) => {
         })
 
         const userOrg = await Organisation.create({
-            name: `${firstname}'s Organisation`,
+            name: `${ firstName }'s Organisation`,
             description: ""
         })
 
@@ -63,12 +63,11 @@ const register = async (req, res) => {
 const login = async (req, res) => {
 
     const { email, password } = req.body
-    const savedPassword = CryptoJS.AES.decrypt(password, PASS).toString(CryptoJS.enc.Utf8)
 
     try {
         const user = await User.findOne({ where: { email }})
 
-        if(!user || password !== savedPassword){
+        if(!user || !await bcrypt.compare(password, user.password)){
             return res.status(401).json({
                 status: 'Bad request',
                 message: 'Authentication failed',
@@ -97,7 +96,9 @@ const login = async (req, res) => {
         
         
     } catch (e) {
+        
         res.status(401).json({
+            err: e, 
           status: 'Bad request',
           message: 'Authentication failed',
           statusCode: 401,
