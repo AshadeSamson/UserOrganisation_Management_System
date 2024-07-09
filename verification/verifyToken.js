@@ -3,17 +3,18 @@ import jwt from "jsonwebtoken"
 
 export const verifyToken = (req, res, next) => {
 
-    const token = req.cookies.auth
+    const token = req.headers.accessToken
 
-    if(token){
-        jwt.verify(token, JWT, (err, decodedToken) => {
-            if(err){
-                res.status(403).json("unauthorized!")
-            }
-            req.user = decodedToken
-            next()
-        })
-    }else{
-        res.status(403).json("you are not authenticated!")
+    if(!token){
+        return res.status(403).json("Unauthorized")
     }
+
+    jwt.verify(token, JWT, (err, decodedToken) => {
+        if(err){
+            return res.send("Invalid Token!")
+        }
+        req.user = decodedToken
+        next()
+        })
+
 }

@@ -28,8 +28,7 @@ const register = async (req, res) => {
         await newUser.addOrganisation(userOrg)
         
         const token = jwt.sign({ userId: newUser.userId, email: newUser.email }, JWT, {expiresIn: "1h"})
-        const tokenLS = 1000 * 3 * 24 * 60 * 60
-        res.cookie("auth", token, {httpOnly: true, maxAge: tokenLS})
+
      
         res.status(201).json({
             status: 'success',
@@ -75,8 +74,7 @@ const login = async (req, res) => {
         }
 
         const token = jwt.sign({ userId: user.userId, email: user.email }, JWT, {expiresIn: "1h"})
-        const tokenLS = 1000 * 3 * 24 * 60 * 60
-        res.cookie("auth", token, {httpOnly: true, maxAge: tokenLS})
+        
 
         res.status(200).json({
             status: 'success',
