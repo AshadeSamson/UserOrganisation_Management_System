@@ -19,7 +19,13 @@ export const getUserOganisations = async ( req, res ) => {
         status: 'success',
         message: 'Organisations retrieved successfully',
         data: {
-          organisations: user.Organisations,
+          organisations: user.Organisations.map( (org) => {
+            return {
+              orgId: org.orgId,
+              name: org.name,
+              description: org.description
+            }
+          })
         },
       });
     } catch (error) {
@@ -52,7 +58,11 @@ export const getOrganisation = async ( req, res ) => {
       res.status(200).json({
         status: 'success',
         message: 'Organisation retrieved successfully',
-        data: organisation,
+        data: {
+          orgId: organisation.orgId,
+          name: organisation.name,
+          description: organisation.description
+        },
       });
     } catch (error) {
      
@@ -85,16 +95,23 @@ export const createOrganisation = async ( req, res ) => {
         description,
       });
   
-      await req.user.addOrganisation(organisation);
+      const user = await User.findByPk(req.user.userId);
+
+      await user.addOrganisation(organisation)
   
       res.status(201).json({
         status: 'success',
         message: 'Organisation created successfully',
-        data: organisation,
+        data: {
+          orgId: organisation.orgId,
+          name: organisation.name,
+          description: organisation.description
+        },
       });
     } catch (error) {
       
       res.status(400).json({
+        err: error.message,
         status: 'Bad Request',
         message: 'Client error',
         statusCode: 400,
