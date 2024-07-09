@@ -9,6 +9,7 @@ const register = async (req, res) => {
 
     const { firstName, lastName, email, password, phone} = req.body
     const hashedPassword = await bcrypt.hash(password, 10);
+  
 
     try{
         
@@ -27,8 +28,7 @@ const register = async (req, res) => {
 
         await newUser.addOrganisation(userOrg)
         
-        const token = jwt.sign({ userId: newUser.userId, email: newUser.email }, JWT, {expiresIn: "1h"})
-
+        const token = jwt.sign({ userId: newUser.userId, email: newUser.email }, JWT, {expiresIn: "20h"})
      
         res.status(201).json({
             status: 'success',
@@ -73,8 +73,7 @@ const login = async (req, res) => {
               })
         }
 
-        const token = jwt.sign({ userId: user.userId, email: user.email }, JWT, {expiresIn: "1h"})
-        
+        const token = jwt.sign({ userId: user.userId, email: user.email }, JWT, {expiresIn: "20h"})
 
         res.status(200).json({
             status: 'success',
