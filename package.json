@@ -1,7 +1,7 @@
 {
   "name": "hng_backend_stage_two",
   "version": "1.0.0",
-  "description": "",
+  "description": "user-organisation management system",
   "type": "module",
   "main": "app.js",
   "scripts": {
