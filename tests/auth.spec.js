@@ -1,4 +1,6 @@
 import { app } from "../server";
+import { server } from "../app";
+import { db } from "../config/db";
 import  request  from "supertest";
 import { User, Organisation } from "../models/associations";
 import bcrypt from "bcryptjs/dist/bcrypt.js";
@@ -26,11 +28,17 @@ describe("Auth Endpoints", () => {
     beforeEach(() => {
       bcrypt.hash.mockResolvedValue('hashed_password');
       bcrypt.compare.mockResolvedValue(true);
-      jwt.sign.mockReturnValue(sampleToken);
+      jwt.sign.mockReturnValue(token);
   
-      User.create.mockResolvedValue(sampleUser);
+      User.create.mockResolvedValue(testUser);
       Organisation.create.mockResolvedValue({ name: "Ashade's Organisation", description: '' });
-      User.findOne.mockResolvedValue(sampleUser);
+      User.findOne.mockResolvedValue(testUser);
+    });
+
+
+    afterAll(async () => {
+      await db.close(); 
+      server.close();  
     });
 
 
@@ -40,12 +48,11 @@ describe("Auth Endpoints", () => {
       .post("/auth/register")
       .send({
         firstName: 'Ashade',
-        lastName: 'Samson',
-        email: 'ashon@example.com',
+        lastName: 'Sams',
+        email: 'ashons@example.com',
         password: 'password123',
         phone: '1234567890',
       })
-
 
       expect(res.statusCode).toEqual(201);
       expect(res.body).toEqual(
