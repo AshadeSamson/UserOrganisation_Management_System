@@ -1,5 +1,5 @@
 {
-  "name": "hng_backend_stage_two",
+  "name": "user organisation management system",
   "version": "1.0.0",
   "description": "user-organisation management system",
   "type": "module",
@@ -24,7 +24,8 @@
     "nodemon": "^3.1.4",
     "pg": "^8.12.0",
     "sequelize": "^6.37.3",
-    "supertest": "^7.0.0"
+    "supertest": "^7.0.0",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.8",

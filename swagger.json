@@ -1,0 +1,115 @@
+{
+    "openapi":"3.0.0",
+    "info":{
+        "title": "User/Organisation Management API",
+        "version": "1.0.0",
+        "description": "User/Organisation Management API",
+        "contact": {
+          "name": "API Support",
+          "url": "http://www.example.com/support",
+          "email": "support@example.com"
+        }
+    },
+    "servers":[
+        {
+            "url": "http://api.example.com/v1",
+            "description": "Main (production) server"
+        }
+    ],
+    "components":{
+        "schemas":{
+            "User":{
+                "type": "object",
+                "properties": {
+                    "userId":{ "type": "string", "example": "xghhsdjkj2536748"},
+                    "firstName": { "type": "string", "example": "John"},
+                    "lastName": { "type": "string", "example": "Doe"},
+                    "email": { "type": "string", "format": "email", "example": "johndoe@example.com"},
+                    "password": { "type": "string", "format": "password", "example": "pass_word!123"},
+                    "phone": { "type": "string", "example": "+2340987654321"}
+                }
+            },
+            "Organisation":{
+                "type": "object",
+                "properties": {
+                    "orgId": { "type": "string", "example": "gdwu4537238"},
+                    "name": { "type": "string", "example": "John's Organisation"},
+                    "description": { "type": "string", "example": "description"}
+                }
+            },
+            "registerRequest": {
+                "type": "object",
+                "properties": {
+                    "firstName": {"$ref": "#/components/schemas/User/properties/firstName"},
+                    "lastName": {"$ref": "#/components/schemas/User/properties/lastName"},
+                    "email": {"$ref": "#/components/schemas/User/properties/email"},
+                    "password": {"$ref": "#/components/schemas/User/properties/password"},
+                    "phone": {"$ref": "#/components/schemas/User/properties/phone"}
+                },
+                "required": ["firstName", "lastName", "email", "password", "phone"]
+            },
+            "loginRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {"$ref": "#/components/schemas/User/properties/email"},
+                    "password": {"$ref": "#/components/schemas/User/properties/password"}
+                },
+                "required": ["email", "password"]
+            }
+        }
+    },
+    "paths":{
+        "/auth/register": {
+            "post": {
+                "summary": "Register a new user",
+                "description": "Registers a new user with a first name, last name, email, password, and phone number.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "applicaiton/json": {
+                            "schema": {"$ref": "#/components/schemas/registerRequest"}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Registration succesful",
+                        "content": {
+                            "applicaiton/json": {
+                                "schema": {
+                                    "type":"object",
+                                    "properties": {
+                                        "status": { "type": "string", "example": "success"},
+                                        "message": { "type": "string", "example": "Registration successful"},
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "accessToken": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIsInR5..."},
+                                                "user": {"$ref": "#/components/schemas/User"}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "applicaiton/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": { "type": "string", "example": "Bad request"},
+                                        "message": { "type": "string", "example": "Registration unsuccessful"}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/login": {}
+    }
+}
