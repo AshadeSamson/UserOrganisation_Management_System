@@ -16,6 +16,16 @@
             "description": "Main (production) server"
         }
     ],
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Endpoints related to user authentication (register, login)"
+        },
+        {
+            "name": "User",
+            "description": "Endpoints related to user/organisation operations"
+        }
+    ],
     "components":{
         "schemas":{
             "User":{
@@ -26,6 +36,16 @@
                     "lastName": { "type": "string", "example": "Doe"},
                     "email": { "type": "string", "format": "email", "example": "johndoe@example.com"},
                     "password": { "type": "string", "format": "password", "example": "pass_word!123"},
+                    "phone": { "type": "string", "example": "+2340987654321"}
+                }
+            },
+            "returnedUser":{
+                "type": "object",
+                "properties": {
+                    "userId":{ "type": "string", "example": "xghhsdjkj2536748"},
+                    "firstName": { "type": "string", "example": "John"},
+                    "lastName": { "type": "string", "example": "Doe"},
+                    "email": { "type": "string", "format": "email", "example": "johndoe@example.com"},
                     "phone": { "type": "string", "example": "+2340987654321"}
                 }
             },
@@ -63,6 +83,7 @@
             "post": {
                 "summary": "Register a new user",
                 "description": "Registers a new user with a first name, last name, email, password, and phone number.",
+                "tags": ["Authentication"],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -85,7 +106,7 @@
                                             "type": "object",
                                             "properties": {
                                                 "accessToken": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIsInR5..."},
-                                                "user": {"$ref": "#/components/schemas/User"}
+                                                "user": {"$ref": "#/components/schemas/returnedUser"}
                                             }
                                         }
                                     }
@@ -110,6 +131,57 @@
                 }
             }
         },
-        "/auth/login": {}
+        "/auth/login": {
+            "post": {
+                "summary": "Login an existing user",
+                "description": "Authenticates a user and returns a JWT token for further access.",
+                "tags": ["Authentication"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "applicaiton/json": {
+                            "schema": {"$ref": "#/components/schemas/loginRequest"}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login succesful",
+                        "content": {
+                            "applicaiton/json": {
+                                "schema": {
+                                    "type":"object",
+                                    "properties": {
+                                        "status": { "type": "string", "example": "success"},
+                                        "message": { "type": "string", "example": "Login successful"},
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "accessToken": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIsInR5..."},
+                                                "user": {"$ref": "#/components/schemas/returnedUser"}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Bad request",
+                        "content": {
+                            "applicaiton/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": { "type": "string", "example": "Bad request"},
+                                        "message": { "type": "string", "example": "Authentication failed"}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
