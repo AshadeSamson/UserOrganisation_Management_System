@@ -1,5 +1,5 @@
 import { app } from "../server";
-import { server } from "../app";
+import  server  from "../app";
 import { db } from "../config/db";
 import  request  from "supertest";
 import { User, Organisation } from "../models/associations";

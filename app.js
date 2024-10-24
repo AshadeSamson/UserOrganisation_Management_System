@@ -2,9 +2,11 @@ import { app } from "./server.js"
 import { PORT } from "./config/config.js"
 
 // for localhost environment
-// export const server = app.listen(PORT || 0, () => {
-//     console.log(`Server running on port ${server.address().port}`)
-// })
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT || 0, () => {
+        console.log(`Server running on port ${PORT || 0}`);
+    });
+}
 
 
 // for production environment (vercel)
