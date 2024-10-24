@@ -20,6 +20,7 @@ const appInit = () => {
     app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
     // routes
+    app.get("/", async (req, res) => { res.json("you are welcome")})
     app.use("/auth", authRouter)
     app.use("/api", organisationRouter)
 
