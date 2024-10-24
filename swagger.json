@@ -57,6 +57,13 @@
                     "description": { "type": "string", "example": "description"}
                 }
             },
+            "OrganisationRequest": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                }
+            },
             "registerRequest": {
                 "type": "object",
                 "properties": {
@@ -75,7 +82,13 @@
                     "password": {"$ref": "#/components/schemas/User/properties/password"}
                 },
                 "required": ["email", "password"]
-            }
+            },
+            "AddUserRequest": {
+                "type": "object",
+                "properties": {
+                  "userId": { "type": "string" }
+                }
+              }
         }
     },
     "paths":{
@@ -182,6 +195,316 @@
                     }
                 }
             }
+        },
+        "/api/users/{id}": {
+            "get": {
+                "summary": "Get user record",
+                "description": "retrieve a user record through the user ID",
+                "tags": ["User"],
+                "parameters": [
+                    {
+                      "name": "id",
+                      "in": "path",
+                      "required": true,
+                      "description": "The ID of the user to retrieve",
+                      "schema": {
+                        "type": "string"
+                      }
+                    }
+                  ],
+                  "responses": {
+                    "200": {
+                        "description": "User retrieved successfully",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "success"},
+                                    "message": { "type": "string", "example": "User retrieved successfully"},
+                                    "data": { "$ref": "#/components/schemas/returnedUser"}
+                                }
+                              }
+                            }
+                          }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "Not found"},
+                                    "message": { "type": "string", "example": "User not found"}
+                                }
+                              }
+                            }
+                          }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "error"},
+                                    "message": { "type": "string", "example": "An error occured"}
+                                }
+                              }
+                            }
+                          }
+                    }
+                  }
+            }
+        },
+        "/api/organisations": {
+            "get": {
+                "summary": "Get user's organisations",
+                "description": "retrieves a list of organisations associated with the authenticated user",
+                "tags": ["User"],
+                  "responses": {
+                    "200": {
+                        "description": "Organisations retrieved successfully",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "success"},
+                                    "message": { "type": "string", "example": "Organisations retrieved successfully"},
+                                    "data": { "$ref": "#/components/schemas/Organisation"}
+                                }
+                              }
+                            }
+                          }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "Not found"},
+                                    "message": { "type": "string", "example": "User not found"}
+                                }
+                              }
+                            }
+                          }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "error"},
+                                    "message": { "type": "string", "example": "An error occured"}
+                                }
+                              }
+                            }
+                          }
+                    }
+                  }
+            },
+            "post": {
+                "summary": "Create an organisation",
+                "description": "allows authenticated users to create a new organisation",
+                "tags": ["User"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/components/schemas/OrganisationRequest"
+                        }
+                      }
+                    }
+                  },
+                  "responses": {
+                    "201": {
+                        "description": "Organisation created successfully",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "success"},
+                                    "message": { "type": "string", "example": "Organisation created successfully"},
+                                    "data": { "$ref": "#/components/schemas/Organisation"}
+                                }
+                              }
+                            }
+                          }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "Bad request"},
+                                    "message": { "type": "string", "example": "Client error"}
+                                }
+                              }
+                            }
+                          }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "error"},
+                                    "message": { "type": "string", "example": "An error occured"}
+                                }
+                              }
+                            }
+                          }
+                    }
+                  }
+            }
+        },
+        "/api/organisations/{orgId}": {
+            "get": {
+                "summary": "Get organisation by ID",
+                "description": "retrieve detailed information about a specific organisation by its unique identifier (ID)",
+                "tags": ["User"],
+                "parameters": [
+                    {
+                      "name": "orgId",
+                      "in": "path",
+                      "required": true,
+                      "description": "The ID of the organisation to retrieve",
+                      "schema": {
+                        "type": "string"
+                      }
+                    }
+                  ],
+                  "responses": {
+                    "200": {
+                        "description": "Organisation retrieved successfully",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "success"},
+                                    "message": { "type": "string", "example": "Organisation retrieved successfully"},
+                                    "data": { "$ref": "#/components/schemas/Organisation"}
+                                }
+                              }
+                            }
+                          }
+                    },
+                    "404": {
+                        "description": "Organisation not found",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "Not found"},
+                                    "message": { "type": "string", "example": "Organisation not found"}
+                                }
+                              }
+                            }
+                          }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "error"},
+                                    "message": { "type": "string", "example": "An error occured"}
+                                }
+                              }
+                            }
+                          }
+                    }
+                  }
+            }
+        },
+        "/api/organisations/{ordId}/users": {
+            "post": {
+                "tags": ["User"],
+                "summary": "Add user to organisation",
+                "description": "enables authenticated users to add an existing user to a specified organisation",
+                "parameters": [
+                  {
+                    "name": "orgId",
+                    "in": "path",
+                    "required": true,
+                    "description": "The ID of the organisation",
+                    "schema": {
+                      "type": "string"
+                    }
+                  }
+                ],
+                "requestBody": {
+                  "required": true,
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/AddUserRequest"
+                      }
+                    }
+                  }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User added to organisation successfully",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "success"},
+                                    "message": { "type": "string", "example": "User added to organisation successfully"}
+                                }
+                              }
+                            }
+                          }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "Not Found"},
+                                    "message": { "type": "string", "example": "User or Organisation not found"}
+                                }
+                              }
+                            }
+                          }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                              "schema": {
+                                "type":"object",
+                                "properties":{
+                                    "status": { "type": "string", "example": "error"},
+                                    "message": { "type": "string", "example": "An error occured"}
+                                }
+                              }
+                            }
+                          }
+                    }
+                  }
+              }
         }
     }
 }
