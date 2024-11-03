@@ -1,6 +1,7 @@
 import express from "express";
 import { db } from "./config/db.js";
 import authRouter from "./routes/authRoute.js";
+import userRouter from "./routes/userRoute.js"
 import organisationRouter from "./routes/orgRoute.js";
 import swaggerUI from "swagger-ui-express";
 import swaggerDocs from "./swagger.json" assert { type: 'json' };
@@ -29,6 +30,7 @@ const appInit = () => {
     app.get("/", (req, res) => { res.json("you are welcome")})
     app.use("/auth", authRouter)
     app.use("/api", organisationRouter)
+    app.use("/api", userRouter)
 
     return app
 }
