@@ -8,3 +8,5 @@ const userRouter = express.Router()
 
 
 userRouter.get("/users/:id", verifyToken, getUserRecord)
+userRouter.put("/users/:id", verifyToken, updateUserRecord)
+userRouter.delete("/users/:id", verifyToken, deactivateUser)
